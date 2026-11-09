@@ -1,4 +1,3 @@
-
 # 츤데레 AI 비서 챗봇
 
 ## 1. 프로젝트 소개
@@ -9,7 +8,7 @@ Hugging Face 모델을 FastAPI 서버로 서빙하고, Streamlit으로 채팅 �
 - **기반 모델**: Qwen2.5-1.5B-Instruct (Apache 2.0)
 - **말투 학습**: LoRA 파인튜닝 (PEFT)
 - **정확도 보완**: 질문을 종류별로 나눠서 일정 파일, Tavily 검색, 파이썬 계산으로 처리
-- **시연 영상**: (영상 링크)
+- **시연 영상**: 4-3 참고
 
 ## 2. 시스템 아키텍처
 
@@ -39,12 +38,13 @@ Hugging Face 모델을 FastAPI 서버로 서빙하고, Streamlit으로 채팅 �
 | 구성 요소 | 파일 | 역할 |
 |---|---|---|
 | UI | `frontend/app_chatbot.py` | 채팅 화면, 대화 기록 유지, API Key 입력 |
-| API 서버 | `app/chatbot_api.py`, `auth.py`, `chatbot_schemas.py` | `/health`, `/chat`, `/schedule`, API Key 인증, 입력 검증 |
-| 모델 | `app/chatbot_model.py` | Qwen + LoRA 어댑터. 작업 요청과 요약에는 어댑터를 끈 원래 모델 사용 |
-| 가드 | `app/guard.py` | 질문을 못하는 일, 일정, 실시간, 계산, 일반으로 분류하고 재시도 |
-| 출력 필터 | `app/postfilter.py` | "흥" 반복 제한, 위험 조언, 거절, 가짜 앱 이름 차단, 반말 교정 |
-| 일정 | `app/schedule.py` | 날짜 범위를 해석해 일정 파일에서 답변 (시연용 가짜 일정) |
-| 검색 | `app/search.py` | Tavily 검색, 질의 재작성, 시세 추출, 한자 및 영어 응답 차단 |
+| 터널 | `tunnel/start_ui_tunnel.py` | Streamlit 실행과 cloudflared 임시 공개 주소 생성 |
+| API 서버 | `app/server/chatbot_api.py`, `auth.py`, `chatbot_schemas.py` | `/health`, `/chat`, `/schedule`, API Key 인증, 입력 검증 |
+| 모델 | `app/model/chatbot_model.py` | Qwen + LoRA 어댑터. 작업 요청과 요약에는 어댑터를 끈 원래 모델 사용 |
+| 가드 | `app/guard/guard.py` | 질문을 못하는 일, 일정, 실시간, 계산, 일반으로 분류하고 재시도 |
+| 출력 필터 | `app/postfilter/postfilter.py` | "흥" 반복 제한, 위험 조언, 거절, 가짜 앱 이름 차단, 반말 교정 |
+| 일정 | `app/routes/schedule.py` | 날짜 범위를 해석해 일정 파일에서 답변 (시연용 가짜 일정) |
+| 검색 | `app/routes/search.py` | Tavily 검색, 질의 재작성, 시세 추출, 한자 및 영어 응답 차단 |
 
 ## 4. 결과
 
@@ -88,7 +88,7 @@ https://github.com/user-attachments/assets/4bfdab52-8701-4942-b995-9ee0707e03f0
 
 3) 정보 검색 부분(시연 영상에서 검색되지 않은 부분)
    
-<img width="651" height="184" alt="스크린샷 2026-11-05 오전넌너넌" src="https://github.com/user-attachments/assets/ac9ee4e7-865a-4fad-939a-5bd3e485cc05" />
+<img width="651" height="184" alt="스크린샷 2026-11-05 오전넌너넌" src="https://github.com/user-attachments/assets/ac9ee4e7-865a-4fad-939a-5bd3e485cc05" />
 
 
 
@@ -100,4 +100,3 @@ https://github.com/user-attachments/assets/4bfdab52-8701-4942-b995-9ee0707e03f0
 | 실험 결과와 평가표를 단계별로 정리해 둠 | 증강(Qwen 7B)에 쓴 시드가 30~40개뿐이라 600개 넘게 만드는 동안 비슷한 문장과 중복이 많이 생김 | 시드를 유형별로 늘리고 다양하게 구성하기 |
 | 환각처럼 답이 분명한 판정은 코드 규칙으로 자동화함 | G-Eval 채점 모델(EXAONE 7.8B, 4bit)이 말투를 제대로 판단하지 못함. "공손하고 친절한 답"을 좋게 보도록 학습돼 츤데레 답을 불친절하다고 감점했고, 3점과 4점처럼 미묘한 차이를 구분하지 못해 점수가 3점 근처로 몰림 | 평가 대상보다 훨씬 강한 채점 모델을 쓰고, 1~5점 대신 둘 중 고르기 방식으로 채점하며, 사람이 채점한 결과와 일치도를 먼저 확인하기 |
 | | 시연 때 검색이 동작하지 않음 (Tavily 무료 사용량 초과로 추정) | 사용량이 넉넉한 API 플랜을 쓰고, 검색 실패를 로그와 화면에 표시하기 |
-

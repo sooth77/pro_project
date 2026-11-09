@@ -1,0 +1,10 @@
+torch
+transformers
+peft
+accelerate
+fastapi
+uvicorn
+pydantic
+requests
+streamlit
+tavily-python
