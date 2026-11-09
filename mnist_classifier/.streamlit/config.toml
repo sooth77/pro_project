@@ -1,0 +1,7 @@
+# Streamlit 테마 설정: 연한 초록색 화면
+[theme]
+base = "light"                          # 밝은 테마 기준
+primaryColor = "#2E8B57"                # 버튼, 선택 상자 등 강조색 (진한 초록)
+backgroundColor = "#EAF7EC"             # 전체 배경 (연한 초록)
+secondaryBackgroundColor = "#D3EFD8"    # 입력칸, 표, 펼침 상자 배경 (조금 더 진한 연초록)
+textColor = "#1F3A2B"                   # 글자색 (짙은 녹색 계열)
